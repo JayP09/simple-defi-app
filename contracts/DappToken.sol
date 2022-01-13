@@ -23,7 +23,7 @@ contract DappToken {
     );
 
     // MAPPINGS
-    mapping(address => uint) balanceOf;
+    mapping(address => uint) public balanceOf;
     mapping(address => mapping(address => uint)) allowance;
 
 

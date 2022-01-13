@@ -8,6 +8,7 @@ contract DaiToken {
     string public symbol = "mDai";
     uint256 public totalSupply = 1000000000000000000000000; // 1 million token
     uint8 public decimals = 18;
+    address public owner;
 
     // EVENTS
     event Transfer(
@@ -22,21 +23,28 @@ contract DaiToken {
         uint _value
     );
 
+    event Burn(
+        address indexed _burner,
+        address indexed _burnAddress,
+        uint _value
+    );
+
     // MAPPINGS
-    mapping(address => uint) balanceOf;
+    mapping(address => uint) public balanceOf;
     mapping(address => mapping(address => uint)) allowance;
 
 
     // FUNCTIONS
     constructor () {
         balanceOf[msg.sender] = totalSupply;
+        owner = msg.sender;
     }
 
-    function transfer(address _from, address _to, uint _value) public returns(bool success){
+    function transfer(address _to, uint _value) public returns(bool success){
         require(balanceOf[msg.sender] >= _value);
-        balanceOf[_from] -= _value;
+        balanceOf[msg.sender] -= _value;
         balanceOf[_to] += _value;
-        emit Transfer(_from, _to, _value);
+        emit Transfer(msg.sender, _to, _value);
         return true;
     }
 
@@ -56,6 +64,9 @@ contract DaiToken {
         return true;
     }
 
-
-
+     function burn(uint _amount) public {
+        balanceOf[msg.sender] -= _amount;
+        balanceOf[address(0)] += _amount;
+        emit Burn(msg.sender,address(0), _amount);
+    }
 }

@@ -6,7 +6,7 @@ import "./DappToken.sol";
 
 contract TokenFarm{
     // STATE VARIBALES
-    string public name = "Token farm";
+    string public name = "Token Farm";
     address public owner;
     DappToken public dappToken;
     DaiToken public daiToken;
@@ -14,8 +14,8 @@ contract TokenFarm{
 
 
     // MAPPING
-    mapping(address => uint) stakingBalance;
-    mapping(address => bool) isStaking;
+    mapping(address => uint) public stakingBalance;
+    mapping(address => bool) public isStaking;
     mapping(address => bool) hasStaked;
 
     // MODIFIERS
@@ -57,11 +57,11 @@ contract TokenFarm{
         emit StakeToken(msg.sender, _amount);
     }
 
-    function unstakeToken(uint _amount) public{
+    function unstakeTokens(uint _amount) public{
         require(_amount <= stakingBalance[msg.sender], "Staking balance is lower then amount");
 
         // transfer DaiToken to msg.sender
-        daiToken.transfer(address(this), msg.sender, _amount);
+        daiToken.transfer(msg.sender, _amount);
 
         // Update staking balance
         stakingBalance[msg.sender] -= _amount;
@@ -73,7 +73,7 @@ contract TokenFarm{
         emit UnstakeToken(msg.sender, _amount);
     }
 
-    function issueToken() public onlyOwner{
+    function issueTokens() public onlyOwner{
         // issue the token to the staker
         for(uint i=0; i<stakers.length; i++){
             address recipient = stakers[i];
