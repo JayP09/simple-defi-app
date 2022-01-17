@@ -14,9 +14,16 @@ async function main() {
   const tokenFarmContract = await TokenFarm.deploy(daiTokenContract.address, dappTokenContract.address);
   await tokenFarmContract.deployed();
 
+  console.log("DaiToken Contract address:",daiTokenContract.address);
+  console.log("DappToken Contract address:", dappTokenContract.address);
+  console.log("TokenFarm Contract address:",tokenFarmContract.address);
+
   await dappTokenContract.transfer(tokenFarmContract.address,'1000000000000000000000000');
 
-  await daiTokenContract.transfer(addr1.address,'1000000000000000000');
+  await daiTokenContract.transfer(addr1.address,'100000000000000000000');
+
+  console.log(owner.address)
+  console.log(addr1.address)
 }
 
 
