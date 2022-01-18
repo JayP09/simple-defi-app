@@ -1,6 +1,8 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
+import "hardhat/console.sol";
+
 contract DappToken {
 
     // STATE VARIABLES
@@ -33,6 +35,7 @@ contract DappToken {
     }
 
     function transfer(address _to, uint _value) public returns(bool success){
+        console.log(msg.sender);
         require(balanceOf[msg.sender] >= _value);
         balanceOf[msg.sender] -= _value;
         balanceOf[_to] += _value;

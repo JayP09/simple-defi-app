@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./DaiToken.sol";
 import "./DappToken.sol";
+import "hardhat/console.sol";
 
 contract TokenFarm{
     // STATE VARIBALES
@@ -36,7 +37,7 @@ contract TokenFarm{
         owner = msg.sender;
     }
 
-    function stakeToken(uint _amount) public{
+    function stakeTokens(uint _amount) public{
         // _amount shpuld be greater then zero
         require(_amount > 0,"Amount Should be greater then zero");
 
@@ -59,9 +60,12 @@ contract TokenFarm{
 
     function unstakeTokens(uint _amount) public{
         require(_amount <= stakingBalance[msg.sender], "Staking balance is lower then amount");
-
         // transfer DaiToken to msg.sender
         daiToken.transfer(msg.sender, _amount);
+
+        if(stakingBalance[msg.sender]>0){
+            issueTokens(_amount);
+        }
 
         // Update staking balance
         stakingBalance[msg.sender] -= _amount;
@@ -69,21 +73,15 @@ contract TokenFarm{
         if(stakingBalance[msg.sender] == 0) {
             isStaking[msg.sender] = false;
         }
-
+        
         emit UnstakeToken(msg.sender, _amount);
     }
 
-    function issueTokens() public onlyOwner{
-        // issue the token to the staker
-        for(uint i=0; i<stakers.length; i++){
-            address recipient = stakers[i];
-            uint balance = stakingBalance[recipient];
-            // transfer Token to staker 
-            if(balance > 0) {
-                dappToken.transfer(recipient,balance);
-                emit IssueDappToken(owner, recipient, balance);
-            }
+    function issueTokens(uint _amount) public {
+        if(stakingBalance[msg.sender] > 0) {
+            console.log("Inside IssueToken");
+            dappToken.transfer(msg.sender,_amount);
+            emit IssueDappToken(owner, msg.sender,_amount);
         }
     }
-
 }
